@@ -3,6 +3,8 @@ import urllib.parse
 from datetime import datetime
 from decimal import Decimal, ROUND_DOWN
 
+from apscheduler.schedulers.blocking import BlockingScheduler
+
 import config
 
 import requests
@@ -105,4 +107,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    scheduler = BlockingScheduler()
+    scheduler.add_job(main, "cron", hour="18", minute="00")
+    scheduler.start()
