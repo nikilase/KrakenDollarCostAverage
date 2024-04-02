@@ -14,6 +14,8 @@ import hmac
 import base64
 import time
 
+from apscheduler_classes import add_job
+
 
 class KrakenClient:
     def __init__(self, api_key, secret_key):
@@ -91,7 +93,7 @@ def main():
         # print(json.dumps(ticker_info, indent=4))
 
         ask_price = ticker_info["result"][pair]["b"][0]
-        ask_price = Decimal(ask_price).quantize(Decimal("1.00"))
+        ask_price = Decimal(ask_price).quantize(Decimal("1.00")) - Decimal("0.5")
         print(f"Ask Price: {ask_price}€")
 
         # dummy_price = (ask_price / 10).quantize(Decimal("1"))
@@ -108,5 +110,5 @@ def main():
 
 if __name__ == "__main__":
     scheduler = BlockingScheduler()
-    scheduler.add_job(main, "cron", hour="18", minute="00")
+    add_job(scheduler, main, "DCA_JOB", config.schedule)
     scheduler.start()
